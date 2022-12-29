@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Каталог товаров</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<!--<div th:replace="~{navigation :: navi(Home)}"/>-->
+<!--<div th:if="${st==1}"><h1>Hello,World</h1></div>-->
+<!--<div th:if="${st==3}"><h1>Склад реализованный на JAVA</h1></div>-->
+<div class="container" th:if="${st ==2}">
+<!--    -->
+    <h1>Фильтр</h1>
+    <table>
+        <tr>
+            <th>Название товара</th>
+            <th>Максимальное значение</th>
+            <th>Минимальное значение</th>
+        </tr>
+        <tr>
+            <form th:action="@{/products/filtr}" th:object="${Filtr}" method="post"  class="form-horizontal" >
+                <td><input th:field="*{substr}" name="value" placeholder="title (*)" class="form-control" ></td>
+                <td><input th:field="*{maxcost}"  placeholder="max value" pattern="\d*" class="form-control" ></td>
+                <td><input th:field="*{mincost}"  placeholder="min value" pattern="\d*"  class="form-control" ></td>
+                <td><button type="submit" class="btn btn-primary">Поиск</button></td>
+            </form>
+            <form th:action="@{/products/filtr}" th:object="${Filtr}" method="post"  class="form-horizontal" >
+                <td><button type="submit" class="btn btn-primary">Сбросить</button></td>
+            </form>
+        </tr>
+    </table>
+    </table>
+    <h1>Товары</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название товара</th>
+            <th>Цена</th>
+            <th>Действия</th>
+            <th>Удалить</th>
+            <th>Изменить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <div th:if = "${!(product.id == editid)}">
+            <td th:text="${product.id}"/>
+            <td th:text="${product.title}"/>
+            <td th:text="${product.price}"/>
+            <td>
+                <a th:href="@{'/products/show/' + ${product.id}}" th:text="Просмотреть"/></td>
+                <td> <a th:href="@{'/products/edit/' + ${product.id}}" th:text="Изменить"/></td>
+                <td><a th:href="@{'/products/del/'  + ${product.id}}" th:text="Удалить"/>
+            </td>
+
+            </div>
+            <div th:if = "${product.id == editid}">
+                <form th:action="@{/products/edit}">
+                    <td> <input type="text" th:value="${product.id}" name="id" pattern="\d*" readonly required /></td>
+                    <td><input th:value="${product.title}" placeholder="title" name="title" required/></td>
+                    <td> <input th:value="${product.price}" pattern="\d*" name="price" required/></td>
+                    <td><button type="submit">Отправить</button></td>
+                </form>
+            </div>
+
+
+        </tr>
+        <tr><form th:if ="${ad}" th:action="@{/products/add}"
+                  th:object="${product}" method="post" class="form-horizontal">
+
+            <td> <input type="text" placeholder="id" name="id" pattern="\d*"  required /></td>
+            <td><input  placeholder="title" name="title" required/></td>
+            <td><input placeholder="price" pattern="\d*" name="price" required/></td>
+            <td><button type="submit">Добавить</button></td>
+
+<!--            <form th:action="@{/products}" method="post"  class="form-horizontal" >-->
+<!--                <td><button type="submit" class="btn btn-primary">Отмена</button></td>-->
+<!--            </form>-->
+
+        </form></tr>
+        </tbody>
+    </table>
+    <span th:text="${'Всего товаров ' + products.size()}"/>
+    <br>
+<!--    <h1>Добавление товара</h1>-->
+    <form th:if="${!ad}" th:action="@{/products/add}">
+        <button type="submit"  class="btn btn-primary" style="margin-top: 10px;">Добавить</button>
+    </form>
+
+    <div style="height: 70px"></div>
+</div>
+
+</body>
+</html>
